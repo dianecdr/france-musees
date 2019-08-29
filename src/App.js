@@ -17,13 +17,15 @@ function App() {
 class MuseumRow extends React.Component{
   render(){
     const museum=this.props.museum;
+    const museumURL="http://"+museum.fields.sitweb;
+    console.log(museum.fields.sitweb);
     return(   
       <tr>  
         <td>{this.props.num}</td>
         <td>{museum.fields.nom_du_musee}</td>
         <td>{museum.fields.adr} {museum.fields.cp} {museum.fields.ville}</td>
         <td>
-          <a href={museum.fields.siteweb}><button >Site Web</button></a>
+          <a href={museumURL}><button >Site Web</button></a>
         </td>
       </tr>
     );
@@ -37,7 +39,7 @@ class MuseumTable extends React.Component{
     let cpt=1;
 
     museums.forEach((museum)=>{
-      let nameToSearch = museum.datasetid.toLowerCase();
+      let nameToSearch = museum.fields.nom_du_musee.toLowerCase();
       if (nameToSearch.indexOf(this.props.filterText.toLowerCase()) === -1) {
         return;
       }
