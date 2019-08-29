@@ -3,10 +3,13 @@ import './App.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
+import data from './data/liste-et-localisation-des-musees-de-france.json';
+
+
 function App() {
   return (
     <div className="App">
-      <FilterableMuseumTable />
+      <FilterableMuseumTable source={data}/>
     </div>
   );
 }
@@ -16,11 +19,11 @@ class MuseumRow extends React.Component{
     const museum=this.props.museum;
     return(   
       <tr>  
-        <td>{museum.id}</td>
-        <td>{museum.name}</td>
-        <td>{museum.address}</td>
+        <td>{this.props.num}</td>
+        <td>{museum.fields.nom_du_musee}</td>
+        <td>{museum.fields.adr} {museum.fields.cp} {museum.fields.ville}</td>
         <td>
-          <a href={museum.website}><button >Site Web</button></a>
+          <a href={museum.fields.siteweb}><button >Site Web</button></a>
         </td>
       </tr>
     );
@@ -31,15 +34,17 @@ class MuseumTable extends React.Component{
   render(){
     const museums = this.props.museums;
     const rows=[];
+    let cpt=1;
 
     museums.forEach((museum)=>{
-      let nameToSearch = museum.name.toLowerCase();
+      let nameToSearch = museum.datasetid.toLowerCase();
       if (nameToSearch.indexOf(this.props.filterText.toLowerCase()) === -1) {
         return;
       }
       rows.push(
-      <MuseumRow museum={museum} key={museum.id}/>);
-      }
+      <MuseumRow museum={museum} key={museum.recordid} num={cpt}/>);
+      cpt++;
+      }      
     );
 
     return(
@@ -88,7 +93,7 @@ class FilterableMuseumTable extends React.Component{
   constructor(props){
     super(props)
     this.state={
-      filterText:"BEAUX"
+      filterText:""
     };
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
   } 
@@ -100,15 +105,15 @@ class FilterableMuseumTable extends React.Component{
   }
 
   render(){
-    const MUSEUMS = [
+    /* const MUSEUMS = [
       {id: 1, name: "Musée des manufactures de Dentelles", address: "14 avenue de la gare", website:"http://www.ville-retournac.fr/musee"},
       {id: 2, name: "Musée des Beaux Arts et d'Archéologie", address: "Place du palais, CHAUMONT", website:"http://www.ville-chaumont.fr"}
-    ];
+    ]; */
     return(
       <div>
         <h1>Liste des musées de France</h1>
         <SearchBar filterText={this.state.filterText} onFilterTextChange={this.handleFilterTextChange}/>
-        <MuseumTable museums={MUSEUMS} filterText={this.state.filterText}/>
+        <MuseumTable museums={this.props.source} filterText={this.state.filterText}/>
       </div>
     );
   }
